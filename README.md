@@ -1,1 +1,0 @@
-# mevikaskulkarni.github.io
