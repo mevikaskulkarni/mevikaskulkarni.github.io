@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Welcome to My Blog"
-date: 2026-07-06 12:00:00 +0530
+date: 2026-07-05 09:00:00 +0530
 tags: [general, updates]
 excerpt: "Kicking off a new blog section on my portfolio — expect build logs, DSA notes, and hardware war stories from the code × circuits side of things."
 ---

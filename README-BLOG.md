@@ -36,6 +36,15 @@ portfolio keeps working exactly as it did before.
 
 That's it — no `bundle exec jekyll build`, no `_site/` to commit.
 
+> **Watch out for future-dated posts.** GitHub Pages builds run in UTC and
+> Jekyll silently skips any post whose `date:` is later than the build's
+> current time — it won't error, it just won't appear. If you write a post
+> in the evening in IST (UTC+5:30) and give it today's date with a late
+> time (e.g. `18:00 +0530` = `12:30 UTC`), it can still be "in the future"
+> relative to whenever the build actually runs. If a post you just pushed
+> doesn't show up, this is the first thing to check — back the time down a
+> few hours, or use an earlier date.
+
 ## Manual setup still required: Giscus comments
 
 Comments are wired into `_layouts/post.html` via [giscus](https://giscus.app),
