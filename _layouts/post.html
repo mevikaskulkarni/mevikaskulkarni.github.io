@@ -1,0 +1,122 @@
+---
+layout: default
+---
+<article class="blog-post container">
+  <header class="blog-post-header">
+    <h1 class="blog-post-title">{{ page.title }}</h1>
+    <div class="blog-post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%B %-d, %Y" }}</time>
+      {% if page.tags.size > 0 %}
+      <span class="blog-post-tags">
+        {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </span>
+      {% endif %}
+    </div>
+  </header>
+
+  <div class="blog-post-content">
+    {{ content }}
+  </div>
+
+  <section class="blog-reactions" data-slug="{{ page.slug }}">
+    <button type="button" class="reaction-btn like-btn" id="likeBtn" aria-label="Like this post">
+      👍 <span class="reaction-count" id="likeCount">–</span>
+    </button>
+    <button type="button" class="reaction-btn dislike-btn" id="dislikeBtn" aria-label="Dislike this post">
+      👎 <span class="reaction-count" id="dislikeCount">–</span>
+    </button>
+  </section>
+
+  <!--
+    TODO — Giscus comments are wired up below but need one-time manual setup
+    before they will actually work:
+      1. Enable "Discussions" in this repo's GitHub Settings tab.
+      2. Install the giscus app on this repo: https://github.com/apps/giscus
+      3. Go to https://giscus.app, enter this repo, pick a Discussion
+         category, and it will generate real data-repo-id / data-category-id
+         values for you.
+      4. Replace REPLACE_WITH_REPO_ID and REPLACE_WITH_CATEGORY_ID below
+         (and data-category if you picked something other than "General")
+         with the values giscus.app gives you.
+    Until that's done, the comments box below will simply stay empty.
+  -->
+  <section class="blog-comments">
+    <h2 class="blog-comments-title">Comments</h2>
+    <script src="https://giscus.app/client.js"
+      data-repo="mevikaskulkarni/mevikaskulkarni.github.io"
+      data-repo-id="REPLACE_WITH_REPO_ID"
+      data-category="General"
+      data-category-id="REPLACE_WITH_CATEGORY_ID"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="dark"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </section>
+</article>
+
+<script>
+(function () {
+  var slug = {{ page.slug | jsonify }};
+
+  // CounterAPI (https://counterapi.dev) — free, no login required; a
+  // workspace/counter pair is created automatically the first time it's hit.
+  // Rename "workspace" below if you want your counts under your own namespace.
+  var workspace = 'vikaskulkarni-portfolio';
+  var likeCounter = 'post-' + slug + '-like';
+  var dislikeCounter = 'post-' + slug + '-dislike';
+  var base = 'https://api.counterapi.dev/v1/' + workspace + '/';
+  var voteKey = 'blog_vote_' + slug;
+
+  var likeBtn = document.getElementById('likeBtn');
+  var dislikeBtn = document.getElementById('dislikeBtn');
+  var likeCount = document.getElementById('likeCount');
+  var dislikeCount = document.getElementById('dislikeCount');
+  if (!likeBtn || !dislikeBtn) return;
+
+  function lockButtons(choice) {
+    likeBtn.disabled = true;
+    dislikeBtn.disabled = true;
+    (choice === 'like' ? likeBtn : dislikeBtn).classList.add('voted');
+  }
+
+  function loadCounts() {
+    fetch(base + likeCounter).then(function (r) { return r.json(); }).then(function (d) {
+      likeCount.textContent = (d && d.count != null) ? d.count : 0;
+    }).catch(function () { likeCount.textContent = '0'; });
+
+    fetch(base + dislikeCounter).then(function (r) { return r.json(); }).then(function (d) {
+      dislikeCount.textContent = (d && d.count != null) ? d.count : 0;
+    }).catch(function () { dislikeCount.textContent = '0'; });
+  }
+
+  function vote(choice) {
+    if (localStorage.getItem(voteKey)) return; // already voted from this browser
+    var counter = choice === 'like' ? likeCounter : dislikeCounter;
+    var countEl = choice === 'like' ? likeCount : dislikeCount;
+
+    fetch(base + counter + '/up').then(function (r) { return r.json(); }).then(function (d) {
+      countEl.textContent = (d && d.count != null) ? d.count : countEl.textContent;
+      localStorage.setItem(voteKey, choice);
+      lockButtons(choice);
+    }).catch(function () {
+      // network hiccup — still remember locally so we don't hammer the API
+      localStorage.setItem(voteKey, choice);
+      lockButtons(choice);
+    });
+  }
+
+  var storedVote = localStorage.getItem(voteKey);
+  if (storedVote) lockButtons(storedVote);
+
+  likeBtn.addEventListener('click', function () { vote('like'); });
+  dislikeBtn.addEventListener('click', function () { vote('dislike'); });
+
+  loadCounts();
+})();
+</script>

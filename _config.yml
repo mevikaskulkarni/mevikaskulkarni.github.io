@@ -1,0 +1,25 @@
+title: Vikas Kulkarni
+description: "Code × Circuits — build logs, DSA notes, and hardware war stories from Vikas Kulkarni."
+url: "https://mevikaskulkarni.github.io"
+baseurl: ""
+
+markdown: kramdown
+
+# All of these plugins are supported natively by GitHub Pages
+# (see the github-pages gem's plugin allowlist) — no custom
+# plugin gems, no local build step required.
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+permalink: /blog/:year/:month/:day/:title/
+
+# Keep Jekyll from touching/publishing anything blog-tooling related.
+# index.html, portfolio.css, portfolio.js, vikas.jpg, and assets/ have no
+# front matter, so Jekyll copies them through untouched regardless.
+exclude:
+  - README-BLOG.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

@@ -1,0 +1,22 @@
+---
+layout: default
+title: Blog
+---
+<div class="container blog-list-page">
+  <h2 class="section-title">Blog</h2>
+
+  <div class="blog-list">
+    {% for post in site.posts %}
+    <article class="blog-card">
+      <h3 class="blog-card-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+      <div class="blog-card-meta">
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%B %-d, %Y" }}</time>
+      </div>
+      <p class="blog-card-excerpt">{{ post.excerpt | strip_html }}</p>
+      <a href="{{ post.url | relative_url }}" class="blog-read-more">Read more →</a>
+    </article>
+    {% else %}
+    <p class="blog-empty">No posts yet — check back soon.</p>
+    {% endfor %}
+  </div>
+</div>
